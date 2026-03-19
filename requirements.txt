@@ -1,0 +1,7 @@
+ccxt
+pandas
+matplotlib
+numpy
+tqdm
+streamlit
+plotly

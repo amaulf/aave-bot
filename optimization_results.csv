@@ -1,0 +1,9 @@
+rank,sharpe_in,sharpe_out,win_rate_in,win_rate_out,pnl_in,pnl_out,trades_in,trades_out,volume_filter,candle_confirm,rsi_filter
+1,13.5141,3.7040,0.8571,0.6000,19.56,2.33,7,5,True,True,True
+2,10.3215,9.8088,0.6667,0.6667,132.40,69.31,63,33,False,False,False
+3,9.5851,-0.8014,0.6667,0.4286,21.67,-0.67,12,7,True,True,False
+4,9.4832,7.5524,0.6170,0.6087,93.19,31.28,47,23,True,False,False
+5,9.4645,13.1547,0.6296,0.7692,107.24,74.93,54,26,False,False,True
+6,7.9647,8.3896,0.5682,0.6364,74.36,33.41,44,22,True,False,True
+7,7.4279,5.2397,0.6111,0.5714,23.90,6.09,18,7,False,True,True
+8,4.2018,1.2482,0.4667,0.5000,21.91,2.33,30,14,False,True,False
