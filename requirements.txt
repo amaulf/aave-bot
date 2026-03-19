@@ -3,5 +3,6 @@ pandas
 matplotlib
 numpy
 tqdm
-streamlit
+streamlit>=1.35.0
 plotly
+altair>=5.0.0
