@@ -1,0 +1,10 @@
+key,asset,experiment_name,strategy,params_hash,pnl,return_pct,win_rate,trades,updated_at
+AAVE/USDT|Range · PnL Max|range|e4714d03f288ea999a6b0e599f56bef230734c35,AAVE/USDT,Range · PnL Max,range,e4714d03f288ea999a6b0e599f56bef230734c35,624.86,62.5,58.9,56,2026-03-19 10:41 UTC
+AAVE/USDT|Range · Sharpe|range|f7204f3bf51c423795ea95d3c9d9667df1243525,AAVE/USDT,Range · Sharpe,range,f7204f3bf51c423795ea95d3c9d9667df1243525,96.01,9.6,73.9,23,2026-03-19 10:41 UTC
+AAVE/USDT|Range · PnL Max · Long Only|range|9ec61d15a21f1c2851a6e0c43813eb231aeacbee,AAVE/USDT,Range · PnL Max · Long Only,range,9ec61d15a21f1c2851a6e0c43813eb231aeacbee,522.54,52.3,55.6,36,2026-03-19 10:41 UTC
+AAVE/USDT|Momentum · PnL Max|momentum|19ab8036d321260f6023e2cb1f5688afb930d09a,AAVE/USDT,Momentum · PnL Max,momentum,19ab8036d321260f6023e2cb1f5688afb930d09a,1621.5,162.1,50.7,205,2026-03-19 10:41 UTC
+AAVE/USDT|Momentum · PnL Max · Long Only|momentum|9cbb5d5ec7c6500aedbce897c646174b386cfbfc,AAVE/USDT,Momentum · PnL Max · Long Only,momentum,9cbb5d5ec7c6500aedbce897c646174b386cfbfc,459.29,45.9,20.6,247,2026-03-19 10:41 UTC
+AAVE/USDT|Momentum · Balanced · Long Only|momentum|01d4d8e5283aeeda5f0e89570792d4aafdddf551,AAVE/USDT,Momentum · Balanced · Long Only,momentum,01d4d8e5283aeeda5f0e89570792d4aafdddf551,376.97,37.7,36.1,219,2026-03-19 10:41 UTC
+AAVE/USDT|Momentum · Baseline (Engulfing)|momentum|d7510f65cd77fcbdf7886f3917998320c30ec385,AAVE/USDT,Momentum · Baseline (Engulfing),momentum,d7510f65cd77fcbdf7886f3917998320c30ec385,-30.18,-3.0,49.3,69,2026-03-19 10:41 UTC
+BTC/USDT|Range · Sharpe|range|22ae434025cc60d268cfed135bf0951f97b59d24,BTC/USDT,Range · Sharpe,range,22ae434025cc60d268cfed135bf0951f97b59d24,55.81,5.6,59.2,76,2026-03-19 10:41 UTC
+BTC/USDT|Momentum · Baseline (Engulfing)|momentum|d7510f65cd77fcbdf7886f3917998320c30ec385,BTC/USDT,Momentum · Baseline (Engulfing),momentum,d7510f65cd77fcbdf7886f3917998320c30ec385,-91.06,-9.1,50.7,67,2026-03-19 10:41 UTC

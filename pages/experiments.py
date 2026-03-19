@@ -1,6 +1,5 @@
 import hashlib
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote_plus
 
@@ -106,31 +105,6 @@ def _run_summary(symbol: str, strategy_key: str, params_tuple: tuple) -> dict:
     }
 
 
-def _refresh_asset_snapshots(asset: str, exps: list[Experiment]) -> pd.DataFrame:
-    store = _load_snapshots()
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    rows = []
-    for exp in exps:
-        summary = _run_summary(asset, exp.strategy, tuple(sorted(exp.params.items())))
-        rows.append({
-            "key": _exp_key(asset, exp),
-            "asset": asset,
-            "experiment_name": exp.name,
-            "strategy": exp.strategy,
-            "params_hash": _params_hash(exp.params),
-            "pnl": summary["pnl"],
-            "return_pct": summary["return_pct"],
-            "win_rate": summary["win_rate"],
-            "trades": summary["trades"],
-            "updated_at": now,
-        })
-
-    fresh = pd.DataFrame(rows, columns=SNAPSHOT_COLUMNS)
-    keep_other_assets = store[store["asset"] != asset] if not store.empty else pd.DataFrame(columns=SNAPSHOT_COLUMNS)
-    merged = pd.concat([keep_other_assets, fresh], ignore_index=True)
-    _save_snapshots(merged)
-    return merged
-
 
 def _badge(exp: Experiment) -> str:
     return "🟢" if exp.primary else "🟠"
@@ -140,16 +114,7 @@ def _backtest_href(asset: str, exp_name: str) -> str:
     return f"/backtest?asset={quote_plus(asset)}&experiment={quote_plus(exp_name)}"
 
 
-left, _right = st.columns([3, 1])
-with left:
-    refresh_clicked = st.button("Refresh table results", type="secondary")
-
-if refresh_clicked:
-    with st.spinner(f"Refreshing {len(experiments)} experiments for {selected_coin}..."):
-        snapshot_store = _refresh_asset_snapshots(selected_coin, experiments)
-    st.success("Experiment table refreshed.")
-else:
-    snapshot_store = _load_snapshots()
+snapshot_store = _load_snapshots()
 
 asset_snapshots = snapshot_store[snapshot_store["asset"] == selected_coin] if not snapshot_store.empty else pd.DataFrame(columns=SNAPSHOT_COLUMNS)
 snap_by_key = {row["key"]: row for _, row in asset_snapshots.iterrows()}

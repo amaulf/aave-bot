@@ -1,4 +1,4 @@
-cache/
+cache/*.csv.tmp
 __pycache__/
 *.db
 *.db-shm
