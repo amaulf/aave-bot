@@ -1,4 +1,3 @@
-import os
 import time
 import ccxt
 import pandas as pd
@@ -6,7 +5,26 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 CACHE_DIR = Path(__file__).parent / "cache"
+SEED_DIR = Path(__file__).parent / "data"
 CACHE_MAX_AGE = 3600
+
+_DATA_SOURCE: dict[str, str] = {}  # symbol -> "live" | "seed"
+
+
+def data_source(symbol: str) -> str:
+    """Returns how data was last loaded for a symbol."""
+    return _DATA_SOURCE.get(symbol, "unknown")
+
+
+def _seed_path(symbol: str, timeframe: str) -> Path:
+    safe = symbol.replace("/", "_")
+    return SEED_DIR / f"{safe}_{timeframe.upper()}.csv"
+
+
+def _load_csv(path: Path) -> pd.DataFrame:
+    df = pd.read_csv(path, parse_dates=["timestamp"])
+    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+    return df
 
 
 def fetch_ohlcv(symbol: str = "AAVE/USDT", timeframe: str = "1h", days: int = 365, cache_tag: str = "") -> pd.DataFrame:
@@ -16,33 +34,44 @@ def fetch_ohlcv(symbol: str = "AAVE/USDT", timeframe: str = "1h", days: int = 36
 
     if cache_file.exists() and (time.time() - cache_file.stat().st_mtime) < CACHE_MAX_AGE:
         print(f"Loading from cache ({filename})...")
-        df = pd.read_csv(cache_file, parse_dates=["timestamp"])
-        df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+        df = _load_csv(cache_file)
         _add_indicators(df)
+        _DATA_SOURCE[symbol] = "live"
         return df
 
-    print(f"Fetching {days}d from Binance...")
-    exchange = ccxt.binance()
-    since = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp() * 1000)
-    all_candles = []
+    try:
+        print(f"Fetching {days}d from Binance...")
+        exchange = ccxt.binance()
+        since = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp() * 1000)
+        all_candles = []
 
-    while True:
-        candles = exchange.fetch_ohlcv(symbol, timeframe, since=since, limit=1000)
-        if not candles:
-            break
-        all_candles.extend(candles)
-        since = candles[-1][0] + 1
-        if len(candles) < 1000:
-            break
+        while True:
+            candles = exchange.fetch_ohlcv(symbol, timeframe, since=since, limit=1000)
+            if not candles:
+                break
+            all_candles.extend(candles)
+            since = candles[-1][0] + 1
+            if len(candles) < 1000:
+                break
 
-    df = pd.DataFrame(all_candles, columns=["timestamp", "open", "high", "low", "close", "volume"])
-    df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
+        df = pd.DataFrame(all_candles, columns=["timestamp", "open", "high", "low", "close", "volume"])
+        df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
 
-    CACHE_DIR.mkdir(exist_ok=True)
-    df.to_csv(cache_file, index=False)
+        CACHE_DIR.mkdir(exist_ok=True)
+        df.to_csv(cache_file, index=False)
+        _add_indicators(df)
+        _DATA_SOURCE[symbol] = "live"
+        return df
 
-    _add_indicators(df)
-    return df
+    except Exception as e:
+        seed = _seed_path(symbol, timeframe)
+        if seed.exists():
+            print(f"Binance unavailable ({e}), loading seed data from {seed.name}...")
+            df = _load_csv(seed)
+            _add_indicators(df)
+            _DATA_SOURCE[symbol] = "seed"
+            return df
+        raise
 
 
 def _add_indicators(df: pd.DataFrame) -> None:

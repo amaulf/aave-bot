@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-from data import fetch_ohlcv
+from data import fetch_ohlcv, data_source
 from simulator import simulate
 from strategies.base import SHARED_PARAMS
 from strategies.registry import EXPERIMENTS, STRATEGIES
@@ -129,6 +129,8 @@ st.session_state["last_params"] = current_params
 if run_clicked or params_changed or "results" not in st.session_state:
     with st.spinner("Running strategy..."):
         df = load_data(selected_coin)
+        if data_source(selected_coin) == "seed":
+            st.info("Live data unavailable from this server. Showing pre-loaded data (last refreshed Mar 19 2026).", icon="ℹ️")
         signals, metadata = strategy_obj.generate_signals(df, param_values)
 
         sim_kw = {**strategy_obj.simulator_overrides, **metadata.get("simulator_overrides", {})}

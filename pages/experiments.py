@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 import pandas as pd
 import streamlit as st
 
-from data import fetch_ohlcv
+from data import fetch_ohlcv, data_source
 from simulator import simulate
 from strategies.base import SHARED_PARAMS
 from strategies.registry import EXPERIMENTS, STRATEGIES, Experiment
@@ -64,6 +64,11 @@ selected_coin = st.selectbox("Asset", UI_ASSETS)
 experiments: list[Experiment] = EXPERIMENTS[selected_coin]
 
 st.caption("Table uses snapshot metrics for fast loading. Backtest page remains fully dynamic.")
+
+# Show banner when running on seed data (Binance unavailable on cloud servers)
+_probe_df = load_data(selected_coin)
+if data_source(selected_coin) == "seed":
+    st.info("Live data unavailable from this server. Showing pre-loaded data (last refreshed Mar 19 2026).", icon="ℹ️")
 
 
 @st.cache_data(ttl=3600)
